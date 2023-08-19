@@ -1,24 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import CreateWallet from './Screens/CreateWallet';
+import RestoreWallet from './Screens/RestoreWallet';
+import CreatedMnemonics from './Screens/CreatedMnemonics';
+import Settings from './Screens/Settings';
+import Dashboard from './Screens/Dashboard';
+import { RPCBlockProviderProvider } from './Providers/RPCBlockProvider';
+import { RPCUrlProvider } from './Providers/RPCUrlProvider';
+import { WalletProvider } from './Providers/WalletProvider';
+import SentTransaction from './Screens/SentTransaction';
+import { AccountsProvider } from './Providers/AccountProviders';
+import Onboarding from './Screens/Onboarding';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <AccountsProvider>
+        <RPCUrlProvider>
+          <RPCBlockProviderProvider>
+            <WalletProvider>
+              <Router>
+                <Routes>
+                  <Route path='/' element={<Onboarding />} />
+                  <Route path='/create' element={<CreateWallet />} />
+                  <Route path='/restore' element={<RestoreWallet />} />
+                  <Route path='/created' element={<CreatedMnemonics />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/sent" element={<SentTransaction />} />
+                </Routes>
+              </Router>
+            </WalletProvider>
+          </RPCBlockProviderProvider>
+        </RPCUrlProvider>
+      </AccountsProvider>
     </div>
   );
 }
