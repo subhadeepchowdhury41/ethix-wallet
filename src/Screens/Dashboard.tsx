@@ -67,10 +67,12 @@ const Dashboard = () => {
     let interval: NodeJS.Timer | null = null;
     if (interval === null) {
       interval = setInterval(() => {
-        getBalance();
-        getTransactions();
+        // getBalance();
+        // getTransactions();
       }, 5000);
     }
+    getBalance();
+    getTransactions();
     return () => clearInterval(interval!);
   }, []);
   return (

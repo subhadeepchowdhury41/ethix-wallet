@@ -5,6 +5,7 @@ import { useWallet } from "../Providers/WalletProvider";
 import { Avatar, TextField, Tooltip } from "@mui/material";
 import { SolidButton } from "../Components/CustomButtons";
 import { useNavigate } from "react-router-dom";
+import AccountsDropdown from "../Components/AccountsDropdown";
 
 const Onboarding = () => {
   const { defaultMnemonics } = useAccountsContext();
@@ -21,7 +22,7 @@ const navigate = useNavigate();
         defaultMnemonics !== null && (
           <div className="flex flex-col justify-between h-screen">
             <Tooltip title={defaultMnemonics.name}>
-              <div className="cursor-pointer bg-slate-200 flex rounded-3xl text-md font-bold text-blue-800 w-36
+              {/* <div className="cursor-pointer bg-slate-200 flex rounded-3xl text-md font-bold text-blue-800 w-36
              justify-between items-center p-1 pr-3 mx-auto">
                 <Avatar>
                   {defaultMnemonics.name[0]}
@@ -29,7 +30,8 @@ const navigate = useNavigate();
                 <div className=" overflow-hidden text-ellipsis line-clamp-1 w-20">
                   {defaultMnemonics.name}
                 </div>
-              </div>
+              </div> */}
+              <AccountsDropdown/>
             </Tooltip>
             <div>
               <div className="text-2xl font-bold">

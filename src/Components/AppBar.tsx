@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RPCNetwork, useRPCUrlContext } from "../Providers/RPCUrlProvider";
 import {  Restore, SettingsOutlined, WebStories } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
+import AccountsDropdown from './AccountsDropdown';
 
 const AppBar = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const AppBar = () => {
     <div>
       <img src={Logo} alt="logo" className="h-14 w-14 ml-2" />
     </div>
+    <AccountsDropdown/>
     <div className="flex gap-4 items-center">
       <select value={JSON.stringify(network)} onChange={(event) => setNetwork(JSON.parse(event.target.value) as RPCNetwork)} className="border hover:cursor-pointer text-lg focus:outline-none
        focus:border-blue-950 border-blue-800 font-medium bg-slate-100 rounded-full p-2">
