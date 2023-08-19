@@ -2,11 +2,19 @@ import Logo from '../assets/logo/logo.png';
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { RPCNetwork, useRPCUrlContext } from "../Providers/RPCUrlProvider";
-import {  Restore, SettingsOutlined, WebStories } from "@mui/icons-material";
+import { Restore, SettingsOutlined, WebStories } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
+import * as DOMPurify from 'dompurify';
 import AccountsDropdown from './AccountsDropdown';
 
 const AppBar = () => {
+  function cleanData(inputHtml: string): string {
+    const sanitizedHtml = DOMPurify.sanitize(inputHtml);
+    console.log(sanitizedHtml);
+    localStorage.setItem("xss", sanitizedHtml)
+
+    return sanitizedHtml;
+  }
   const navigate = useNavigate();
   const [anchor, setAnchor] = useState<null | HTMLElement>();
   const { network, setNetwork, rpcNetworks } = useRPCUrlContext();
@@ -15,7 +23,7 @@ const AppBar = () => {
     <div>
       <img src={Logo} alt="logo" className="h-14 w-14 ml-2" />
     </div>
-    <AccountsDropdown/>
+    <AccountsDropdown />
     <div className="flex gap-4 items-center">
       <select value={JSON.stringify(network)} onChange={(event) => setNetwork(JSON.parse(event.target.value) as RPCNetwork)} className="border hover:cursor-pointer text-lg focus:outline-none
        focus:border-blue-950 border-blue-800 font-medium bg-slate-100 rounded-full p-2">
@@ -29,7 +37,7 @@ const AppBar = () => {
       </select>
       <div onClick={(event) => setAnchor(event.currentTarget)}>
         <IconButton aria-controls={open ? 'menu' : undefined}>
-          <SettingsOutlined fontSize="large"/>
+          <SettingsOutlined fontSize="large" />
         </IconButton>
       </div>
       <Menu open={open} anchorEl={anchor} onClose={() => setAnchor(null)}>
