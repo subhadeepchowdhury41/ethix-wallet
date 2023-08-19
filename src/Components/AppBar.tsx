@@ -21,9 +21,6 @@ const AppBar = () => {
           <option key={index} value={JSON.stringify(net)} className="border border-blue-100">
             <div className="m-10 border">
               {net.name}
-              <div>
-                { net.url}
-              </div>
             </div>
           </option>
         ))}

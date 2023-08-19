@@ -72,7 +72,7 @@ const Dashboard = () => {
       }, 5000);
     }
     return () => clearInterval(interval!);
-  }, [wallet]);
+  }, []);
   return (
     <div className={`flex flex-col gap-8 justify-center ${sendOpen ? '' : ''} items-center w-full`}>
       <AppBar />
@@ -183,7 +183,7 @@ const Dashboard = () => {
             <img src={Eth} alt="logo" className="h-14 w-14 ml-2" />
           </div>
           <div className='text-3xl font-bold overflow-hidden text-ellipsis'>
-            {balance ?? 'Loading Balance...'} {balance !== null ? network + ' ETH' : null}
+            {balance ?? 'Loading Balance...'} {balance !== null ? network.name + ' ETH' : null}
           </div>
         </div>
         <div className="flex gap-4 items-center justify-center">
