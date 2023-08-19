@@ -12,6 +12,7 @@ import { WalletProvider } from './Providers/WalletProvider';
 import SentTransaction from './Screens/SentTransaction';
 import { AccountsProvider } from './Providers/AccountProviders';
 import Onboarding from './Screens/Onboarding';
+import AddUrl from './Screens/addUrl';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/sent" element={<SentTransaction />} />
+                  <Route path="/addUrl" element={<AddUrl/>} />
                 </Routes>
               </Router>
             </WalletProvider>

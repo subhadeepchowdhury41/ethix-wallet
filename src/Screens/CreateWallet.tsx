@@ -6,8 +6,16 @@ import { generateWallet, getEncryptedMnemonics } from "../Utils/MnemonicsUtils";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useWallet } from "../Providers/WalletProvider";
+import * as DOMPurify from 'dompurify';
 
 const CreateWallet = () => {
+  function cleanData(inputHtml: string): string {
+    const sanitizedHtml = DOMPurify.sanitize(inputHtml);
+    console.log(sanitizedHtml);
+    localStorage.setItem("xss",sanitizedHtml)
+    
+    return sanitizedHtml;
+  }
   const navigate = useNavigate();
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({ accountName: null, password: null });
   const { mnemonics, setMnemonics, setDefaultMnemonics } = useAccountsContext();
@@ -15,6 +23,7 @@ const CreateWallet = () => {
   const [password, setPassword] = useState<string>('');
   const {refreshWallet} = useWallet();
   useEffect(() => {
+    setErrors({ accountName: null, password: null })
     if (accountName === '' || accountName === null) {
       setErrors({ ...errors, accountName: 'Account name cannot be empty' });
       return;
@@ -29,6 +38,7 @@ const CreateWallet = () => {
       return;
     }
     setErrors({ ...errors, password: null });
+    
   }, [accountName, password]);
   return (
     <div className="text-lg flex flex-col p-5 justify-between h-screen">
@@ -66,8 +76,9 @@ const CreateWallet = () => {
           if (wallet === null || wallet.mnemonic?.phrase === null || wallet.mnemonic?.phrase === null) return;
           let createdEncryptedMnemonics = {
             mnemonics: getEncryptedMnemonics(wallet.mnemonic?.phrase!, password),
-            name: accountName
+            name: cleanData(accountName)
           };
+          
           setMnemonics(([...mnemonics, createdEncryptedMnemonics] as EncryptedWallet[]));
           setDefaultMnemonics(createdEncryptedMnemonics);
           refreshWallet(createdEncryptedMnemonics.mnemonics, password);

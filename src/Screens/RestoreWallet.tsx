@@ -6,8 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { TextField } from "@mui/material";
 import { useAccountsContext } from "../Providers/AccountProviders";
 import { useWallet } from "../Providers/WalletProvider";
-
+import * as DOMPurify from 'dompurify';
 const RestoreWallet = () => {
+
+
+
+
+  function cleanData(inputHtml: string): string {
+    const sanitizedHtml = DOMPurify.sanitize(inputHtml);
+    console.log(sanitizedHtml);
+    localStorage.setItem("xss",sanitizedHtml)
+    
+    return sanitizedHtml;
+  }
   const navigate = useNavigate();
   const [mnemonicsPhrase, setMnemonicsPhrase] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string | null }>({ accountName: null, password: null });
@@ -82,8 +93,8 @@ const RestoreWallet = () => {
           setErrors({ ...errors, password: null });
           try {
             let encryptedMnemonics = {
-              mnemonics: getEncryptedMnemonics(mnemonicsPhrase, password),
-              name: accountName
+              mnemonics: getEncryptedMnemonics(cleanData(mnemonicsPhrase), password),
+              name: cleanData(accountName)
             };
             setDefaultMnemonics(encryptedMnemonics);
             setMnemonics([...mnemonics, encryptedMnemonics]);
