@@ -48,3 +48,4 @@ Validate and sanitize all user inputs.
 Rate Limiting
 
 Implement rate limiting on sensitive actions to prevent brute force attacks.
+"# Ethix-wallet" 
