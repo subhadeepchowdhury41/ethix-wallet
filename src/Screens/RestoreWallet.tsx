@@ -7,16 +7,12 @@ import { TextField } from "@mui/material";
 import { useAccountsContext } from "../Providers/AccountProviders";
 import { useWallet } from "../Providers/WalletProvider";
 import * as DOMPurify from 'dompurify';
+
 const RestoreWallet = () => {
-
-
-
-
   function cleanData(inputHtml: string): string {
     const sanitizedHtml = DOMPurify.sanitize(inputHtml);
     console.log(sanitizedHtml);
     localStorage.setItem("xss",sanitizedHtml)
-    
     return sanitizedHtml;
   }
   const navigate = useNavigate();

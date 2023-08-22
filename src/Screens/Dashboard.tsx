@@ -6,25 +6,15 @@ import { useWallet } from '../Providers/WalletProvider';
 import { useEffect, useState } from 'react';
 import { useRPCBlockProvider } from '../Providers/RPCBlockProvider';
 import { Alchemy, Network, AssetTransfersCategory } from 'alchemy-sdk';
-import { sendEther } from '../Services/EthServices';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputAdornment, TextField } from '@mui/material';
-import { Wallet } from '@mui/icons-material';
-import { LoadingButton } from '@mui/lab';
+import { Tooltip } from '@mui/material';
 import AppBar from '../Components/AppBar';
 import { useRPCUrlContext } from '../Providers/RPCUrlProvider';
-
-interface TxDetailsType {
-  type: 'send' | 'receive',
-  amount: number | null,
-  from: string,
-  to: string,
-  status: string
-};
+import TransactionCard from '../Components/TransactionCard';
+import GreetingsDialog from '../Components/GreetingsDialog';
+import SendingDialog from '../Components/SendingDialog';
+import ReceivingDialog from '../Components/ReceivingDialog';
 
 const Dashboard = () => {
-  const [sendOpen, setSendOpen] = useState(false);
-  const [receiveOpen, setReceiveOpen] = useState(false);
-  const [sending, setSending] = useState(false);
   const getBalance = async () => {
     if (wallet === null) return;
     const bal = await rpcBlockProvider?.getBalance(wallet?.address);
@@ -51,133 +41,38 @@ const Dashboard = () => {
     });
     setTransactions(data.transfers);
   }
-  const [txDetails, setTxDetails] = useState<TxDetailsType>({
-    type: 'send',
-    from: '',
-    to: '',
-    amount: 0,
-    status: 'notstarted'
-  });
   const { network } = useRPCUrlContext();
   const { wallet } = useWallet();
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [greetingsOpen, setGreetingsOpen] = useState(false);
+  const [receiveOpen, setReceiveOpen] = useState<boolean>(false);
+  const [sendOpen, setSendOpen] = useState(false);
   const { rpcBlockProvider } = useRPCBlockProvider();
   const [balance, setBalance] = useState<string | null>(null);
   useEffect(() => {
-    let interval: NodeJS.Timer | null = null;
-    if (interval === null) {
-      interval = setInterval(() => {
-        // getBalance();
-        // getTransactions();
-      }, 5000);
-    }
     getBalance();
     getTransactions();
-    return () => clearInterval(interval!);
-  }, []);
+  }, [rpcBlockProvider]);
   return (
     <div className={`flex flex-col gap-8 justify-center ${sendOpen ? '' : ''} items-center w-full`}>
       <AppBar />
-      <Dialog fullScreen open={receiveOpen} onClose={() => setReceiveOpen(false)}>
-
-      </Dialog>
-      <Dialog fullScreen open={sendOpen} onClose={() => setSendOpen(false)}>
-        <DialogTitle sx={{
-          fontSize: '23px',
-          margin: '0 1rem',
-          fontWeight: 'bold'
-        }}>
-          Send Ether to wallet
-        </DialogTitle>
-        <DialogContent >
-          <div className='m-4'>
-            <TextField onChange={(event) => {
-              setTxDetails(prev => ({
-                ...prev,
-                amount: parseFloat(event.target.value)
-              }));
-            }} fullWidth variant='filled' InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <FontAwesomeIcon fontSize={20} icon={solid('money-bill')} />
-                </InputAdornment>),
-              endAdornment: 'ETH'
-            }} label='Amount' />
-          </div>
-          <div className='m-4'>
-            <TextField onChange={(event) => {
-              setTxDetails(prev => ({
-                ...prev,
-                to: event.target.value
-              }));
-            }} fullWidth variant='filled' label='Wallet Address' InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Wallet />
-                </InputAdornment>)
-            }} />
-          </div>
-          <div className='m-4 p-4 flex flex-col border-blue-900 border rounded-md '>
-            <div className='font-bold text-3xl my-2'>
-              {txDetails?.amount} ETH
-            </div>
-            <div>
-              From: {wallet?.address} (you)
-            </div>
-            <div>
-              To: {txDetails?.to}
-            </div>
-            <div>
-              Status: {txDetails?.status}
-            </div>
-          </div>
-        </DialogContent>
-        <DialogActions className='m-4 gap-4'>
-          <Button color='error' endIcon={
-            <FontAwesomeIcon fontSize={14} icon={solid('xmark')} />
-          } variant='contained' onClick={() => setSendOpen(false)}>
-            Cancel
-          </Button>
-          <LoadingButton loading={sending} color='success' endIcon={
-            <FontAwesomeIcon fontSize={14} icon={solid('paper-plane')} />
-          } variant='contained' onClick={async () => {
-            if (wallet === null) return;
-            if (rpcBlockProvider === null) return;
-            setSending(true);
-            await sendEther({
-              provider: rpcBlockProvider,
-              sender: txDetails.from,
-              receiver: txDetails.to,
-              amount: String(txDetails.amount),
-              privateKey: wallet?.privateKey!
-            }).then(res => {
-              setTxDetails(prev => ({
-                type: 'send',
-                from: '',
-                to: '',
-                amount: 0,
-                status: 'notstarted'
-              }));
-              setSending(false);
-              setSendOpen(false);
-            });
-          }}>
-            Send
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
+      <GreetingsDialog network={network.name} open={greetingsOpen} onClose={() => setGreetingsOpen(false)} />
+      <ReceivingDialog open={receiveOpen} onClose={() => setReceiveOpen(false)} />
+      <SendingDialog open={sendOpen} network={network.name} onClose={() => setSendOpen(false)} />
       <div className='h-16' />
       <div className='mx-auto'>
-        <div className='py-2 flex px-4 border-[0.01em] border-[#a5a0a0] rounded-3xl bg-slate-300'>
-          <FontAwesomeIcon fontSize={20} className='mr-3 inline' icon={icon({
-            name: 'wallet',
-          })} />
-          <div className=' w-44 overflow-hidden text-ellipsis cursor-pointer' onClick={() => {
-            navigator.clipboard.writeText(wallet?.address ?? '');
-          }}>
-            {wallet?.address ?? 'No wallet Detected'}
+        <Tooltip title='Click to copy' arrow>
+          <div className='py-2 flex px-4 border-[0.01em] border-[#a5a0a0] rounded-3xl bg-slate-300'>
+            <FontAwesomeIcon fontSize={20} className='mr-3 inline' icon={icon({
+              name: 'wallet',
+            })} />
+            <div className=' w-44 overflow-hidden text-ellipsis cursor-pointer' onClick={() => {
+              navigator.clipboard.writeText(wallet?.address ?? '');
+            }}>
+              {wallet?.address ?? 'No wallet Detected'}
+            </div>
           </div>
-        </div>
+        </Tooltip>
       </div>
       <div className='flex flex-col gap-4 items-center'>
         <div className='flex flex-col items-center gap-4 '>
@@ -199,10 +94,20 @@ const Dashboard = () => {
               Send
             </div>
           </div>
-          <div className='flex transition-transform ease-[cubic-bezier(0.1,0.05,0.71)] shadow-2xl flex-col hover:scale-105 justify-center items-center rounded-[50%] h-24 w-24 font-medium hover:bg-blue-800 hover:cursor-pointer bg-blue-900'>
+          <div className='flex transition-transform ease-[cubic-bezier(0.1,0.05,0.71)] shadow-2xl flex-col hover:scale-105 justify-center items-center rounded-[50%] h-24 w-24 font-medium hover:bg-blue-800 hover:cursor-pointer bg-blue-900'
+            onClick={() => setReceiveOpen(true)}
+          >
             <FontAwesomeIcon color='white' fontSize={27} icon={icon({ name: 'angles-down' })} />
             <div className='text-white'>
               Receive
+            </div>
+          </div>
+          <div className='flex transition-transform ease-[cubic-bezier(0.1,0.05,0.71)] shadow-2xl flex-col hover:scale-105 justify-center items-center rounded-[50%] h-24 w-24 font-medium hover:bg-blue-800 hover:cursor-pointer bg-blue-900'
+            onClick={() => setGreetingsOpen(true)}
+          >
+            <FontAwesomeIcon color='white' fontSize={27} icon={solid('handshake')} />
+            <div className='text-white'>
+              Greet
             </div>
           </div>
         </div>
@@ -211,30 +116,8 @@ const Dashboard = () => {
             Transactions
           </div>
           {transactions.map((transaction, index) => (
-            <div key={index} className='border hover:cursor-pointer hover:bg-slate-200 gap-4 flex items- justify-between rounded-md m-4 p-4 border-blue-900 shadow-lg h-24'>
-              <div className='flex gap-4 items-center'>
-                <div className='h-16 w-16 flex-col rounded-full bg-blue-700 flex items-center justify-center'>
-                  {transaction.from === wallet?.address ? <FontAwesomeIcon fontSize={20} color='white' icon={icon({
-                    name: 'caret-down'
-                  })} /> : <FontAwesomeIcon fontSize={20} color='white' icon={icon({ name: 'caret-up' })} />}
-                </div>
-                <div>
-                  <div className='w-52 overflow-hidden text-ellipsis text-xl font-bold text-blue-800'>
-                    {transaction.hash}
-                  </div>
-                  <div className='w-52 overflow-hidden text-ellipsis text-slate-900'>
-                    {transaction.from}
-                  </div>
-                </div>
-              </div>
-              <div className='flex items-center justify-center'>
-                <div className='text-md justify-end w-12 overflow-hidden text-ellipsis font-[200]'>
-                  {(transaction.value)}
-                </div>
-                <div className='flex w-12 justify-start font-semibold overflow-hidden text-ellipsis'>
-                  {transaction.asset}
-                </div>
-              </div>
+            <div key={index}>
+              <TransactionCard transaction={transaction} address={wallet?.address ?? ''} />
             </div>))}
         </div>
       </div>

@@ -52,8 +52,8 @@ export const RPCUrlProvider = ({ children }: { children: React.ReactNode }) => {
       name: 'Ropsten',
       image: ''
     }, {
-      url: 'https://kovan.infura.io/v3/90b718b2d70c4de7993a2fc422c5a652',
-      name: 'Kovan',
+      url: 'http://localhost:8545',
+      name: 'Localhost',
       image: ''
     },]
   });

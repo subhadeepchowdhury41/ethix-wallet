@@ -4,17 +4,9 @@ import { useState } from "react";
 import { RPCNetwork, useRPCUrlContext } from "../Providers/RPCUrlProvider";
 import { Restore, SettingsOutlined, WebStories } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
-import * as DOMPurify from 'dompurify';
 import AccountsDropdown from './AccountsDropdown';
 
 const AppBar = () => {
-  function cleanData(inputHtml: string): string {
-    const sanitizedHtml = DOMPurify.sanitize(inputHtml);
-    console.log(sanitizedHtml);
-    localStorage.setItem("xss", sanitizedHtml)
-
-    return sanitizedHtml;
-  }
   const navigate = useNavigate();
   const [anchor, setAnchor] = useState<null | HTMLElement>();
   const { network, setNetwork, rpcNetworks } = useRPCUrlContext();
