@@ -17,12 +17,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
     "jsx": "react-jsx"
   },
   "include": [
-    "babel.config.cjs",
-    "babel-config-macros.config.js",
-    "src"
-, "tests/App.test.tsx", "tests/setupTests.ts", "src/reportWebVitals.ts"  ]
+    "src",
+    "tests/App.test.tsx",
+    "tests/setupTests.ts",
+    "src/reportWebVitals.ts"
+  ]
 }

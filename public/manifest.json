@@ -4,7 +4,11 @@
   "name": "Ethix Wallet",
   "description": "Chrome extension to connect you to Ethereum blockchain",
   "permissions": [
-    "activeTab"
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*/",
+    "http://*/"
   ],
   "action": {
     "default_popup": "index.html",

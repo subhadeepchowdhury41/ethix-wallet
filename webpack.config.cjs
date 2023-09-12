@@ -1,55 +1,56 @@
-const path = require("path");
-const HTMLPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = {
   entry: {
-    index: "./src/index.tsx",
+    popup: './src/index.tsx',
   },
-  mode: "production",
+  target: 'web',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js',
+  },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: [
-          {
-            loader: "ts-loader",
-            options: {
-              compilerOptions: { noEmit: false },
-            },
-          },
-        ],
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
-        exclude: /node_modules/,
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/[name][ext]'
+        }
       },
     ],
   },
-  plugins: [
-    new CopyPlugin({
-      patterns: [{ from: "manifest.json", to: "../manifest.json" }],
-    }),
-    ...getHtmlPlugins(["index"]),
-  ],
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: ['.tsx', '.ts', '.js'],
   },
-  output: {
-    path: path.join(__dirname, "dist/js"),
-    filename: "[name].js",
+  plugins: [
+    new NodePolyfillPlugin(),
+    new HtmlWebpackPlugin({
+      template: './src/popup.html',
+      filename: 'popup.html',
+      chunks: ['popup'],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './manifest.json', to: 'manifest.json' },
+      ],
+    }),
+  ],
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
   },
 };
-
-function getHtmlPlugins(chunks) {
-  return chunks.map(
-    (chunk) =>
-      new HTMLPlugin({
-        title: "React extension",
-        filename: `${chunk}.html`,
-        chunks: [chunk],
-      })
-  );
-}

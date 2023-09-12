@@ -1,11 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Wallet } from "@mui/icons-material";
+import { Close, Money, Send, Wallet } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
 import { useWallet } from "../Providers/WalletProvider";
 import { useRPCBlockProvider } from "../Providers/RPCBlockProvider";
-import { solid } from "@fortawesome/fontawesome-svg-core/import.macro";
 import { sendEther } from "../Services/EthServices";
 
 
@@ -62,7 +60,7 @@ const SendingDialog = ({ open, onClose, network }: {
           }} fullWidth variant='filled' InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
-                <FontAwesomeIcon fontSize={20} icon={solid('money-bill')} />
+                <Money/>
               </InputAdornment>),
             endAdornment: 'ETH'
           }} label='Amount' />
@@ -97,12 +95,12 @@ const SendingDialog = ({ open, onClose, network }: {
       </DialogContent>
       <DialogActions className='m-4 gap-4'>
         <Button color='error' endIcon={
-          <FontAwesomeIcon fontSize={14} icon={solid('xmark')} />
+          <Close/>
         } variant='contained' onClick={onClose}>
           Cancel
         </Button>
         <LoadingButton loading={sending} color='success' endIcon={
-          <FontAwesomeIcon fontSize={14} icon={solid('paper-plane')} />
+          <Send/>
         } variant='contained' onClick={async () => {
           if (wallet === null) return;
           if (rpcBlockProvider === null) return;

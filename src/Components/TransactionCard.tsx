@@ -1,5 +1,4 @@
-import { icon } from "@fortawesome/fontawesome-svg-core/import.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ArrowDownward, ArrowUpward } from "@mui/icons-material";
 
 const TransactionCard = ({
   transaction,
@@ -9,9 +8,7 @@ const TransactionCard = ({
     <div className='border hover:cursor-pointer hover:bg-slate-200 gap-4 flex items- justify-between rounded-md m-4 p-4 border-blue-900 shadow-lg h-24'>
       <div className='flex gap-4 items-center'>
         <div className='h-16 w-16 flex-col rounded-full bg-blue-700 flex items-center justify-center'>
-          {transaction.from === address ? <FontAwesomeIcon fontSize={20} color='white' icon={icon({
-            name: 'caret-down'
-          })} /> : <FontAwesomeIcon fontSize={20} color='white' icon={icon({ name: 'caret-up' })} />}
+          {transaction.from === address ? <ArrowDownward /> : <ArrowUpward />}
         </div>
         <div>
           <div className='w-52 overflow-hidden text-ellipsis text-xl font-bold text-blue-800'>

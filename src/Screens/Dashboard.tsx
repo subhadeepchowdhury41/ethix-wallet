@@ -1,7 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Eth from '../assets/logo/eth.png';
-import { icon, solid } from '@fortawesome/fontawesome-svg-core/import.macro';
 import { useWallet } from '../Providers/WalletProvider';
 import { useEffect, useState } from 'react';
 import { useRPCBlockProvider } from '../Providers/RPCBlockProvider';
@@ -13,6 +11,7 @@ import TransactionCard from '../Components/TransactionCard';
 import GreetingsDialog from '../Components/GreetingsDialog';
 import SendingDialog from '../Components/SendingDialog';
 import ReceivingDialog from '../Components/ReceivingDialog';
+import { ArrowDownward, Handshake, Send, Wallet } from '@mui/icons-material';
 
 const Dashboard = () => {
   const getBalance = async () => {
@@ -62,13 +61,13 @@ const Dashboard = () => {
       <div className='h-16' />
       <div className='mx-auto'>
         <Tooltip title='Click to copy' arrow>
-          <div className='py-2 flex px-4 border-[0.01em] border-[#a5a0a0] rounded-3xl bg-slate-300'>
-            <FontAwesomeIcon fontSize={20} className='mr-3 inline' icon={icon({
-              name: 'wallet',
-            })} />
-            <div className=' w-44 overflow-hidden text-ellipsis cursor-pointer' onClick={() => {
+          <div className='py-2 flex px-4 border-[0.01em] border-[#a5a0a0] rounded-3xl bg-slate-300
+          cursor-pointer'
+            onClick={() => {
               navigator.clipboard.writeText(wallet?.address ?? '');
             }}>
+            <Wallet fontSize='medium' className='mr-3' />
+            <div className=' w-44 overflow-hidden text-ellipsis '>
               {wallet?.address ?? 'No wallet Detected'}
             </div>
           </div>
@@ -89,7 +88,7 @@ const Dashboard = () => {
               setSendOpen(true);
             }}
           >
-            <FontAwesomeIcon color='white' fontSize={27} icon={icon({ name: 'angles-up' })} />
+            <Send sx={{color: 'white'}}/>
             <div className='text-white'>
               Send
             </div>
@@ -97,7 +96,7 @@ const Dashboard = () => {
           <div className='flex transition-transform ease-[cubic-bezier(0.1,0.05,0.71)] shadow-2xl flex-col hover:scale-105 justify-center items-center rounded-[50%] h-24 w-24 font-medium hover:bg-blue-800 hover:cursor-pointer bg-blue-900'
             onClick={() => setReceiveOpen(true)}
           >
-            <FontAwesomeIcon color='white' fontSize={27} icon={icon({ name: 'angles-down' })} />
+            <ArrowDownward fontSize='large' sx={{color: 'white'}}/>
             <div className='text-white'>
               Receive
             </div>
@@ -105,8 +104,8 @@ const Dashboard = () => {
           <div className='flex transition-transform ease-[cubic-bezier(0.1,0.05,0.71)] shadow-2xl flex-col hover:scale-105 justify-center items-center rounded-[50%] h-24 w-24 font-medium hover:bg-blue-800 hover:cursor-pointer bg-blue-900'
             onClick={() => setGreetingsOpen(true)}
           >
-            <FontAwesomeIcon color='white' fontSize={27} icon={solid('handshake')} />
-            <div className='text-white'>
+            <Handshake fontSize='large' sx={{color: 'white'}}/>
+            <div className='text-white' >
               Greet
             </div>
           </div>
